@@ -1,0 +1,30 @@
+name: Build Mod JAR
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+      
+      - name: Download Gradle
+        run: |
+          curl -L -o gradle.zip https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle.zip
+          chmod +x gradle-8.5/bin/gradle
+      
+      - name: Build with Gradle
+        run: ./gradle-8.5/bin/gradle build
+      
+      - name: Upload JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: litematica-folder-button
+          path: build/libs/litematica-folder-button-1.0.0.jar
